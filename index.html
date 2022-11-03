@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+<head>
+	<title>Get Advice API</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<meta charset="utf-8"/>
+
+    <style>
+        body 
+        {
+            background-color: rgb(174, 159, 159);
+            text-align: center;
+            font-size: 25px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+    </style>
+	<script>
+
+		function getAdvice() {
+
+			ajaxRequest = new XMLHttpRequest();
+ 
+		    ajaxRequest.open("GET", "https://api.adviceslip.com/advice", true)
+			ajaxRequest.send();
+
+            ajaxRequest.onreadystatechange = function(){
+	            
+                if(ajaxRequest.readyState == 1){
+		            console.log("Established server connection.");
+	            }
+	            else if(ajaxRequest.readyState == 2){
+		            console.log("Request received by server.");
+	            }
+	            else if(ajaxRequest.readyState == 3){
+		            console.log("Processing request.");
+	            }
+	            else if(ajaxRequest.readyState == 4){
+		            console.log("Done loading!");
+                    if(ajaxRequest.status == 200){
+
+					result = ajaxRequest.responseText;
+					quote = JSON.parse(result);
+
+                    quoteString = JSON.stringify(quote);	
+                    
+                    length = quoteString.length;
+                    
+                    quoteString = quoteString.substring(27, length-3);
+
+                    if (quoteString[0] != '"') {
+                        newquoteString = '"' + quoteString;
+                        quoteString = newquoteString;
+                    }
+
+                    quoteString += '"';
+                    document.getElementById("data").innerHTML = quoteString; 
+					}
+	}
+	else{
+		console.log("Something went wrong. :(");
+	}
+}
+		}
+
+        function fetchAdvice() {
+
+            response = fetch("https://api.adviceslip.com/advice")
+            .then((response) => response.text())
+            .then(data => 
+            {
+            data = JSON.parse(data)
+            data = JSON.stringify(data);
+
+            length = data.length;
+                    
+            quoteString = data.substring(27, length-3);
+
+            if (quoteString[0] != '"') {
+                newquoteString = '"' + quoteString;
+                quoteString = newquoteString;
+            }
+
+            quoteString += '"';
+
+            document.getElementById("data").innerHTML = quoteString; 
+            })
+            
+        }
+
+        $(document).ready(function () {
+
+
+            $("#getIt").click(getAdvice);
+            $("#fetchIt").click(fetchAdvice);
+}
+
+);
+	</script>
+</head>
+
+
+<body onload="getAdvice()">
+
+    <input type = "button" id="getIt" value = "Get another one!"/>
+    <input type = "button" id="fetchIt" value = "Fetch another one!"/>
+
+    
+
+	<h1>Here's some advice</h1>
+	<h4><div id="data">Loading...</div></h4>
+
+    <br>
+
+    <div>The API I selected contains a collection of advice, and my site displays a piece
+        <br> of advice from this API everytime the user clicks a button to do so.
+    </div>
+    <br>
+    <div>I found this API through the provided GitHub list of API's, and the URL<br>
+        can be found at https://api.adviceslip.com
+        <br>
+        <br>
+        I used two different options for the API requests, each request corresponding<br>
+        to a different button. When the user clicks "get another one", I used the get <br>
+        request to establish an AJAX request and the JSON data from the API. When the <br>
+        user selects "fetch another one", I use the fetch option to obtain data from the API.
+        <br><br>
+        There are a few applications where this could be helpful. The first I can think of is <br>
+        a loading screen. While the user is waiting for something to load (a game, downloading an app, <br>
+        etc.), the API can spit out different pieces of advice, say, every two seconds. 
+        <br> Another application of this API could be just having one of the advice tidbits on the homepage
+        <br> of a website. While a user is scrolling through the site, they could see this at the top or 
+        <br> bottom of the page and appreciate the random helpful statement.
+    </div>
+</body>
+</html>
